@@ -1,0 +1,24 @@
+server:
+  port: 8027
+  servlet:
+    context-path: /api   # 全部接口的路径前面都加上api TODO 更改baseURL
+spring:
+  application:
+    name: apis
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/li_user  # 这里换成自己所在的数据库
+    username: root
+    password: root
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher  # 解决swagger和springboot版本冲突导致空指针的问题
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除的实体字段名   isDelete上就要加入注解@TableLogic
+      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
+      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
