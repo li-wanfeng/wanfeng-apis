@@ -1,9 +1,7 @@
 package com.wanfeng.apis.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.google.gson.Gson;
 import com.wanfeng.apis.common.ErrorCode;
 import com.wanfeng.apis.common.IDRequest;
 import com.wanfeng.apis.exception.ThrowUtils;
@@ -16,6 +14,8 @@ import com.wanfeng.apis.model.entity.User;
 import com.wanfeng.apis.model.vo.InterfaceInfoVO;
 import com.wanfeng.apis.model.vo.user.UserDescVO;
 import com.wanfeng.apis.model.vo.user.UserLoginVO;
+import com.wanfeng.apis.sdk.client.wanfengInterFaceClient;
+import com.wanfeng.apis.sdk.common.BaseResponse;
 import com.wanfeng.apis.service.InterfaceInfoService;
 import com.wanfeng.apis.service.UserService;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -135,8 +136,8 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         Long id = requset.getId();
         //判断id是否存在
         InterfaceInfo byId = this.getById(id);
-        ThrowUtils.throwIf(ObjectUtils.isEmpty(byId),ErrorCode.PARAMS_ERROR,"接口不存在");
-        ThrowUtils.throwIf(byId.getStatus() == 1,ErrorCode.PARAMS_ERROR,"当前接口已发布状态");
+        ThrowUtils.throwIf(ObjectUtils.isEmpty(byId), ErrorCode.PARAMS_ERROR, "接口不存在");
+        ThrowUtils.throwIf(byId.getStatus() == 1, ErrorCode.PARAMS_ERROR, "当前接口已发布状态");
         byId.setStatus(1);
         return this.updateById(byId);
     }
@@ -146,8 +147,8 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         Long id = requset.getId();
         //判断id是否存在
         InterfaceInfo byId = this.getById(id);
-        ThrowUtils.throwIf(ObjectUtils.isEmpty(byId),ErrorCode.PARAMS_ERROR,"接口不存在");
-        ThrowUtils.throwIf(byId.getStatus() == 0,ErrorCode.PARAMS_ERROR,"当前接口已离线状态");
+        ThrowUtils.throwIf(ObjectUtils.isEmpty(byId), ErrorCode.PARAMS_ERROR, "接口不存在");
+        ThrowUtils.throwIf(byId.getStatus() == 0, ErrorCode.PARAMS_ERROR, "当前接口已离线状态");
         byId.setStatus(0);
         return this.updateById(byId);
     }
@@ -157,32 +158,39 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         InterfaceInfo byId = this.getById(id);
         ThrowUtils.throwIf(ObjectUtils.isEmpty(byId), ErrorCode.OPERATION_ERROR, "接口数据不存在");
         InterfaceInfoVO interfaceInfoVO = new InterfaceInfoVO();
-        BeanUtils.copyProperties(byId,interfaceInfoVO);
+        BeanUtils.copyProperties(byId, interfaceInfoVO);
         Long userid = byId.getUserid();
-        if (null != userid && userid != 0){
+        if (null != userid && userid != 0) {
             User byId1 = userService.getById(userid);
             UserDescVO userDescVO = new UserDescVO();
-            BeanUtils.copyProperties(byId1,userDescVO);
+            BeanUtils.copyProperties(byId1, userDescVO);
             interfaceInfoVO.setUser(userDescVO);
         }
         return interfaceInfoVO;
     }
 
     @Override
-    public Object invokeClient(InterfaceInfoInvokeRequset invokeRequset, HttpServletRequest request) {
+    public BaseResponse invokeClient(InterfaceInfoInvokeRequset invokeRequset, HttpServletRequest request) {
         //查询当前用户的信息
         UserLoginVO userLoginVO = userService.getloginUserVO(request);
-        ThrowUtils.throwIf(ObjectUtils.isEmpty(request),ErrorCode.NOT_LOGIN_ERROR,"请登录后进行操作");
-        User byId = (User) userService.getById(userLoginVO.getId());
+        ThrowUtils.throwIf(ObjectUtils.isEmpty(request), ErrorCode.NOT_LOGIN_ERROR, "请登录后进行操作");
+        User byId = userService.getById(userLoginVO.getId());
         String accesskey = byId.getAccesskey();
         String secretkey = byId.getSecretkey();
-        String requestparams = invokeRequset.getRequestparams();
-        ThrowUtils.throwIf(!StringUtils.hasText(requestparams),ErrorCode.PARAMS_ERROR);
+        Map<String, Object> requestparams = invokeRequset.getRequestparams();
+        ThrowUtils.throwIf((null == requestparams || requestparams.isEmpty()), ErrorCode.PARAMS_ERROR);
         //解析requestparams
 //        Gson gson = new Gson();
 //        com.wfapi_client.model.entity.User jsonuser = gson.fromJson(requestparams, com.wfapi_client.model.entity.User.class);
 //        WanfClient wanfClient = new WanfClient("http://localhost:8127/api/name", accesskey, secretkey);
 //        return wanfClient.getUserNameByPOST(jsonuser);
+        wanfengInterFaceClient client = new wanfengInterFaceClient();
+        if ("POST".equals(invokeRequset.getMethod())) {
+            return client.post(invokeRequset.getUrl(), invokeRequset.getRequestparams());
+        }
+        if ("GET".equals(invokeRequset.getMethod())) {
+            return client.get(invokeRequset.getUrl(), invokeRequset.getRequestparams());
+        }
         return null;
     }
 

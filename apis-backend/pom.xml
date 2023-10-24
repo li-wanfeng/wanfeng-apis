@@ -66,11 +66,16 @@
             <artifactId>gson</artifactId>
             <version>2.8.9</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.wanfeng.ClientSDK</groupId>-->
-<!--            <artifactId>apis-interface-SDK</artifactId>-->
-<!--            <version>0.0.1</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.wanfeng.apis.sdk</groupId>
+            <artifactId>apis-interface-SDK</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wanfeng.apis</groupId>
+            <artifactId>apis-commons</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
 </project>

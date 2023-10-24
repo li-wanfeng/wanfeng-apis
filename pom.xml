@@ -11,6 +11,7 @@
     <module>apis-backend</module>
     <module>apis-interface</module>
     <module>apis-interface-SDK</module>
+    <module>apis-commons</module>
   </modules>
 
 
@@ -24,7 +25,13 @@
     <java.version>1.8</java.version>
   </properties>
 
-
+<dependencies>
+  <dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <optional>true</optional>
+  </dependency>
+</dependencies>
 
 
 </project>

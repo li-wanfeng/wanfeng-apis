@@ -3,6 +3,7 @@ package com.wanfeng.apis.model.dto.interfaceInfo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author 风车下跑
@@ -30,7 +31,7 @@ public class InterfaceInfoInvokeRequset implements Serializable {
     /**
      * 请求参数
      */
-    private String requestparams;
+    private Map<String,Object> requestparams;
 
     /**
      * 请求头

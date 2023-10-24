@@ -9,29 +9,14 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.wanfeng.apis.sdk</groupId>
-    <artifactId>apis-interface-SDK</artifactId>
+    <groupId>com.wanfeng.apis</groupId>
+    <artifactId>apis-commons</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.8.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.7.14</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wanfeng.apis</groupId>
-            <artifactId>apis-commons</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-    </dependencies>
+
+
 </project>
