@@ -1,0 +1,17 @@
+server:
+  port: 9000
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: interface_router
+          uri: http://localhost:8027
+          predicates: #断言 用来配置路由规则
+            - Path=/api/**
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace

@@ -15,4 +15,9 @@ public class NameController {
     public String getNameByPost(String id) {
         return id + "post你好啊";
     }
+
+    @GetMapping
+    public String getNameByGet(String id) {
+        return id + "get你好啊";
+    }
 }
